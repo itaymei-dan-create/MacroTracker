@@ -34,6 +34,8 @@ const totalProtein = document.getElementById("totalProtein");
 const workoutStatus = document.getElementById("workoutStatus");
 const entriesDiv = document.getElementById("entries");
 const statsSummary = document.getElementById("statsSummary");
+const netCalValue = document.getElementById("netCalValue");
+const setBurnBtn = document.getElementById("setBurnBtn");
 
 const calProgress = document.getElementById("calProgress");
 const proteinProgress = document.getElementById("proteinProgress");
@@ -44,6 +46,7 @@ const undoBtn = document.getElementById("undoBtn");
 // default daily goals
 let DAILY_CAL_GOAL = Number(localStorage.getItem("DAILY_CAL_GOAL")) || 2000;
 let DAILY_PROTEIN_GOAL = Number(localStorage.getItem("DAILY_PROTEIN_GOAL")) || 150;
+let DAILY_BURN = Number(localStorage.getItem("DAILY_BURN")) || 0;
 
 // load saved data
 let entries = loadFromStorage("entries", []);
@@ -146,6 +149,11 @@ function updateDisplay() {
   totalCalories.textContent = `Calories: ${totalCal} / ${DAILY_CAL_GOAL}`;
   totalProtein.textContent = `Protein: ${totalPro}g / ${DAILY_PROTEIN_GOAL}g`;
   workoutStatus.textContent = `Workout: ${workoutDone ? '✅' : '❌'}`;
+  
+  // Net calories
+  const netCal = totalCal - DAILY_BURN;
+  netCalValue.textContent = `${netCal} (${totalCal} - ${DAILY_BURN} burned)`;
+  netCalValue.style.color = netCal > 0 ? '#4CAF50' : '#e74c3c';
 
   // Progress bars with color coding
   const calPercent = Math.min((totalCal / DAILY_CAL_GOAL) * 100, 100);
@@ -352,6 +360,23 @@ setGoalBtn.onclick = () => {
   localStorage.setItem("DAILY_PROTEIN_GOAL", DAILY_PROTEIN_GOAL);
   updateDisplay();
   alert(`Goals updated!\nCalories: ${DAILY_CAL_GOAL}\nProtein: ${DAILY_PROTEIN_GOAL}g`);
+};
+
+// set daily burn
+setBurnBtn.onclick = () => {
+  const burn = prompt("Enter calories you burn per day (exercise + metabolism):", DAILY_BURN);
+  if (burn === null) return;
+  
+  const burnNum = Number(burn);
+  if (isNaN(burnNum) || burnNum < 0) {
+    alert("Please enter a valid positive number.");
+    return;
+  }
+  
+  DAILY_BURN = burnNum;
+  localStorage.setItem("DAILY_BURN", DAILY_BURN);
+  updateDisplay();
+  alert(`Daily burn set to ${DAILY_BURN} calories!`);
 };
 
 // Allow Enter key to add entry

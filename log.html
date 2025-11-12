@@ -167,6 +167,9 @@ h1 {
 .entry-item {
   padding: 5px 0;
   border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .entry-item:last-child {
   border-bottom: none;
@@ -174,6 +177,18 @@ h1 {
 .entry-time {
   color: #999;
   font-size: 12px;
+}
+.delete-entry-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.delete-entry-btn:hover {
+  background-color: #c0392b;
 }
 
 .no-data {

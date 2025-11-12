@@ -196,7 +196,7 @@ function displayLog() {
       
       <div class="entries-preview ${isExpanded ? 'expanded' : ''}">
         <strong>${isExpanded ? '▼' : '▶'} ${dayEntries.length} meal${dayEntries.length !== 1 ? 's' : ''}</strong>
-        ${isExpanded ? generateEntriesHTML(dayEntries) : ''}
+        ${isExpanded ? generateEntriesHTML(dayEntries, date) : ''}
       </div>
     `;
     
@@ -214,13 +214,16 @@ function displayLog() {
 }
 
 // Generate entries HTML
-function generateEntriesHTML(entries) {
-  return entries.map(entry => {
+function generateEntriesHTML(entries, date) {
+  return entries.map((entry, index) => {
     const time = new Date(entry.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     return `
       <div class="entry-item">
-        <span class="entry-time">${time}</span> - 
-        ${entry.cal} cal, ${entry.protein}g protein
+        <div>
+          <span class="entry-time">${time}</span> - 
+          ${entry.cal} cal, ${entry.protein}g protein
+        </div>
+        <button class="delete-entry-btn" onclick="deleteEntry('${date}', ${index})">×</button>
       </div>
     `;
   }).join('');
@@ -262,6 +265,33 @@ exportBtn.onclick = () => {
   
   alert("Log data exported successfully!");
 };
+
+// Delete individual entry from a past day
+function deleteEntry(date, index) {
+  if (!confirm("Delete this entry from the log?")) return;
+  
+  const updatedArchive = loadFromStorage("archive", {});
+  
+  if (updatedArchive[date]) {
+    updatedArchive[date].splice(index, 1);
+    
+    // If no entries left for that day, remove the day entirely
+    if (updatedArchive[date].length === 0) {
+      delete updatedArchive[date];
+    }
+    
+    try {
+      localStorage.setItem("archive", JSON.stringify(updatedArchive));
+      alert("Entry deleted!");
+      location.reload(); // Refresh to show updated data
+    } catch (e) {
+      alert("Failed to delete entry.");
+    }
+  }
+}
+
+// Make deleteEntry available globally
+window.deleteEntry = deleteEntry;
 
 // Initialize
 displayStats();
