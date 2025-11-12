@@ -1,89 +1,218 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Macro Tracker</title>
-  <style>
-    body { 
-      font-family: 'Segoe UI', sans-serif; 
-      max-width: 400px; 
-      margin: auto; 
-      padding: 20px; 
-      background: #f2f2f2; 
-      color: #333; 
-      text-align: center; 
-    }
-    h1 { color: #4CAF50; }
-    input { 
-      margin: 5px; 
-      padding: 10px; 
-      width: 80%; 
-      font-size: 16px; 
-      border-radius: 8px; 
-      border: 1px solid #ccc; 
-    }
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    input[type="number"] { -moz-appearance: textfield; }
-    button { 
-      padding: 10px 20px; 
-      margin: 5px; 
-      font-size: 16px; 
-      border-radius: 8px; 
-      border: none; 
-      background-color: #4CAF50; 
-      color: white; 
-      cursor: pointer; 
-    }
-    button:hover { background-color: #45a049; }
-    #entries { 
-      margin-top: 20px; 
-      text-align: left; 
-      background: white; 
-      padding: 15px; 
-      border-radius: 10px; 
-      max-height: 300px; 
-      overflow-y: auto; 
-    }
-    .entry { display: flex; justify-content: space-between; align-items: center; margin: 5px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-    .deleteBtn { background-color: #e74c3c; padding: 5px 10px; border-radius: 5px; font-size: 14px; }
-    .deleteBtn:hover { background-color: #c0392b; }
-    label { display: flex; align-items: center; justify-content: center; margin-top: 10px; font-size: 16px; }
-    input[type="checkbox"] { margin-left: 10px; transform: scale(1.2); }
-    .progress { background-color: #ddd; border-radius: 10px; height: 20px; margin: 5px 0; width: 100%; }
-    .progress-bar { height: 100%; border-radius: 10px; background-color: #4CAF50; width: 0%; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Macro Tracker</title>
+<style>
+body { 
+  font-family: 'Segoe UI', sans-serif; 
+  max-width: 400px; 
+  margin: auto; 
+  padding: 20px; 
+  background: #f2f2f2; 
+  color: #333; 
+  text-align: center; 
+}
+h1 { color: #4CAF50; }
+input { 
+  margin: 5px; 
+  padding: 10px; 
+  width: 80%; 
+  font-size: 16px; 
+  border-radius: 8px; 
+  border: 1px solid #ccc; 
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] { 
+  -moz-appearance: textfield;
+}
+button { 
+  padding: 10px 20px; 
+  margin: 5px; 
+  font-size: 16px; 
+  border-radius: 8px; 
+  border: none; 
+  background-color: #4CAF50; 
+  color: white; 
+  cursor: pointer; 
+}
+button:hover { background-color: #45a049; }
+button:active { transform: scale(0.98); }
+.quick-add-btn {
+  background-color: #2196F3;
+  padding: 8px 15px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.quick-add-btn:hover { background-color: #0b7dda; }
+.quick-add-btn .delete-preset {
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+  padding: 2px 6px;
+  margin-left: 5px;
+  font-size: 12px;
+}
+#entries { 
+  margin-top: 20px; 
+  text-align: left; 
+  background: white; 
+  padding: 15px; 
+  border-radius: 10px; 
+  max-height: 300px; 
+  overflow-y: auto; 
+}
+.entry { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin: 5px 0; 
+  border-bottom: 1px solid #eee; 
+  padding-bottom: 5px; 
+}
+.entry-buttons {
+  display: flex;
+  gap: 5px;
+}
+.deleteBtn { 
+  background-color: #e74c3c; 
+  padding: 5px 10px; 
+  border-radius: 5px; 
+  font-size: 14px; 
+}
+.deleteBtn:hover { background-color: #c0392b; }
+.editBtn {
+  background-color: #3498db;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.editBtn:hover { background-color: #2980b9; }
+label { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  margin-top: 10px; 
+  font-size: 16px; 
+}
+input[type="checkbox"] { 
+  margin-left: 10px; 
+  transform: scale(1.2); 
+}
+.progress { 
+  background-color: #ddd; 
+  border-radius: 10px; 
+  height: 20px; 
+  margin: 5px 0; 
+  width: 100%; 
+}
+.progress-bar { 
+  height: 100%; 
+  border-radius: 10px; 
+  background-color: #4CAF50; 
+  width: 0%; 
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+.progress-bar.warning { background-color: #FF9800; }
+.progress-bar.exceeded { background-color: #e74c3c; }
+.stats-summary {
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 10px 0;
+  font-size: 14px;
+}
+.stats-summary.positive { color: #4CAF50; }
+.stats-summary.negative { color: #e74c3c; }
+#undoNotification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: none;
+  z-index: 1000;
+}
+#undoNotification button {
+  background: #4CAF50;
+  margin-left: 10px;
+  padding: 5px 15px;
+}
+.quick-add-section {
+  margin: 15px 0;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+}
+.quick-add-section h3 {
+  margin: 5px 0;
+  font-size: 16px;
+  color: #666;
+}
+#customPresets {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
+  min-height: 40px;
+}
+.add-preset-btn {
+  background-color: #9C27B0;
+  font-size: 14px;
+}
+.add-preset-btn:hover { background-color: #7B1FA2; }
+</style>
 </head>
 <body>
-  <h1>Macro Tracker</h1>
-  <input type="number" id="calInput" placeholder="Calories" min="0" step="1">
-  <input type="number" id="proteinInput" placeholder="Protein (g)" min="0" step="1">
-  
-  <label>
-    Workout Completed
-    <input type="checkbox" id="workoutCheck">
-  </label>
+<h1>Macro Tracker</h1>
+<input type="number" id="calInput" placeholder="Calories" min="0" step="1" inputmode="numeric">
+<input type="number" id="proteinInput" placeholder="Protein (g)" min="0" step="1" inputmode="numeric">
+<label>
+  Workout Completed
+  <input type="checkbox" id="workoutCheck">
+</label>
 
-  <div>
-    <button id="addBtn">Add Entry</button>
-    <button id="resetBtn">Reset Day</button>
-    <button id="setGoalBtn">Set Daily Goal</button>
-    <button id="viewLogBtn" onclick="location.href='log.html'">Work Log</button>
-  </div>
+<div class="quick-add-section">
+  <h3>Quick Add Presets</h3>
+  <div id="customPresets"></div>
+  <button class="add-preset-btn" id="addPresetBtn">+ Create Preset</button>
+</div>
 
-  <h2>Today's Totals</h2>
-  <p id="totalCalories">Calories: 0</p>
-  <div class="progress"><div class="progress-bar" id="calProgress"></div></div>
-  <p id="totalProtein">Protein: 0g</p>
-  <div class="progress"><div class="progress-bar" id="proteinProgress"></div></div>
-  <p id="workoutStatus">Workout: ❌</p>
+<div>
+  <button id="addBtn">Add Entry</button>
+  <button id="resetBtn">Reset Day</button>
+</div>
+<div>
+  <button id="setGoalBtn">Set Daily Goal</button>
+  <button id="exportBtn">Export Data</button>
+</div>
 
-  <div id="entries"></div>
+<h2>Today's Totals</h2>
+<p id="totalCalories">Calories: 0</p>
+<div class="progress"><div class="progress-bar" id="calProgress"></div></div>
+<p id="totalProtein">Protein: 0g</p>
+<div class="progress"><div class="progress-bar" id="proteinProgress"></div></div>
+<p id="workoutStatus">Workout: ❌</p>
 
-  <script src="script.js"></script>
+<div class="stats-summary" id="statsSummary"></div>
+
+<div id="entries"></div>
+
+<div id="undoNotification">
+  <span id="undoMessage">Entry deleted</span>
+  <button id="undoBtn">Undo</button>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
