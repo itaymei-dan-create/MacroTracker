@@ -3,91 +3,59 @@ const calInput = document.getElementById("calInput");
 const proteinInput = document.getElementById("proteinInput");
 const addBtn = document.getElementById("addBtn");
 const resetBtn = document.getElementById("resetBtn");
+const setGoalBtn = document.getElementById("setGoalBtn");
 const workoutCheck = document.getElementById("workoutCheck");
 
 const totalCalories = document.getElementById("totalCalories");
 const totalProtein = document.getElementById("totalProtein");
 const workoutStatus = document.getElementById("workoutStatus");
-const entriesContainer = document.getElementById("entriesContainer");
+const entriesDiv = document.getElementById("entries");
 
 const calProgress = document.getElementById("calProgress");
 const proteinProgress = document.getElementById("proteinProgress");
 
-// plus/minus buttons
-document.getElementById("calPlus").onclick = () => calInput.stepUp();
-document.getElementById("calMinus").onclick = () => calInput.stepDown();
-document.getElementById("proPlus").onclick = () => proteinInput.stepUp();
-document.getElementById("proMinus").onclick = () => proteinInput.stepDown();
-
-// daily goals
-const DAILY_CAL_GOAL = 2000;
-const DAILY_PROTEIN_GOAL = 150;
+// default daily goals
+let DAILY_CAL_GOAL = Number(localStorage.getItem("DAILY_CAL_GOAL")) || 2000;
+let DAILY_PROTEIN_GOAL = Number(localStorage.getItem("DAILY_PROTEIN_GOAL")) || 150;
 
 // load saved data
 let entries = JSON.parse(localStorage.getItem("entries")) || [];
 let workoutDone = JSON.parse(localStorage.getItem("workoutDone")) || false;
 let archive = JSON.parse(localStorage.getItem("archive")) || {};
 
-// get day key
-function getDayKey(ts) {
-  const d = new Date(ts);
-  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+// helper: get day key
+function getDayKey(time) {
+  const d = new Date(time);
+  return d.toISOString().split('T')[0]; // YYYY-MM-DD
 }
 
 // update display
 function updateDisplay() {
-  const todayKey = getDayKey(Date.now());
-  const todayEntries = entries.filter(e => getDayKey(e.time) === todayKey);
+  const totalCal = entries.reduce((sum, e) => sum + e.cal, 0);
+  const totalPro = entries.reduce((sum, e) => sum + e.protein, 0);
 
-  const totalCal = todayEntries.reduce((sum, e) => sum + e.cal, 0);
-  const totalPro = todayEntries.reduce((sum, e) => sum + e.protein, 0);
-
-  totalCalories.textContent = `Calories: ${totalCal}`;
-  totalProtein.textContent = `Protein: ${totalPro}g`;
+  totalCalories.textContent = `Calories: ${totalCal} / ${DAILY_CAL_GOAL}`;
+  totalProtein.textContent = `Protein: ${totalPro}g / ${DAILY_PROTEIN_GOAL}g`;
   workoutStatus.textContent = `Workout: ${workoutDone ? '✅' : '❌'}`;
 
   calProgress.style.width = Math.min((totalCal / DAILY_CAL_GOAL) * 100, 100) + '%';
   proteinProgress.style.width = Math.min((totalPro / DAILY_PROTEIN_GOAL) * 100, 100) + '%';
+
   workoutCheck.checked = workoutDone;
 
-  // combine archive + today entries for log
-  const allDays = { ...archive };
-  if (todayEntries.length > 0) allDays[todayKey] = todayEntries;
-
-  entriesContainer.innerHTML = '';
-  Object.keys(allDays).sort((a, b) => new Date(b) - new Date(a)).forEach(day => {
-    const dayDiv = document.createElement('div');
-    dayDiv.className = 'day-group';
-
-    const dayEntries = allDays[day];
-    const dayCal = dayEntries.reduce((sum, e) => sum + e.cal, 0);
-    const dayPro = dayEntries.reduce((sum, e) => sum + e.protein, 0);
-    const dayWorkout = dayEntries.some(e => e.workout);
-
-    const dayTitle = document.createElement('div');
-    dayTitle.className = 'day-title';
-    dayTitle.textContent = `${day} | Calories: ${dayCal} | Protein: ${dayPro}g | Workout: ${dayWorkout ? '✅' : '❌'}`;
-    
-    const dayContent = document.createElement('div');
-    dayContent.className = 'day-entries';
-    dayContent.style.display = 'none';
-    dayTitle.onclick = () => { dayContent.style.display = dayContent.style.display === 'none' ? 'block' : 'none'; };
-
-    dayEntries.forEach(e => {
-      const entryDiv = document.createElement('div');
-      entryDiv.className = 'entry';
-      const time = new Date(e.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      entryDiv.innerHTML = `<span>${e.cal} cal | ${e.protein}g | ${time}</span>`;
-      const delBtn = document.createElement('button');
-      delBtn.textContent = 'Delete';
-      delBtn.className = 'deleteBtn';
-      delBtn.onclick = () => deleteEntry(entries.indexOf(e));
-      entryDiv.appendChild(delBtn);
-      dayContent.appendChild(entryDiv);
-    });
-
-    dayDiv.appendChild(dayContent);
-    entriesContainer.appendChild(dayDiv);
+  // display entries
+  entriesDiv.innerHTML = '';
+  entries.forEach((e, i) => {
+    const entryDiv = document.createElement('div');
+    entryDiv.className = 'entry';
+    const time = new Date(e.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    entryDiv.innerHTML = `<span>${e.cal} cal | ${e.protein}g | ${time}</span>`;
+    const delBtn = document.createElement('button');
+    delBtn.textContent = 'Delete';
+    delBtn.className = 'deleteBtn';
+    delBtn.onclick = () => deleteEntry(i);
+    entryDiv.appendChild(delBtn);
+    entriesDiv.appendChild(entryDiv);
   });
 }
 
@@ -95,17 +63,22 @@ function updateDisplay() {
 addBtn.onclick = () => {
   const cal = Number(calInput.value);
   const protein = Number(proteinInput.value);
-  if (cal < 0 || protein < 0) { alert("Enter positive numbers."); return; }
-  if (!cal && !protein) return;
+
+  if (!cal && cal !== 0 || !protein && protein !== 0 || cal < 0 || protein < 0) {
+    alert("Please enter positive values for calories and protein.");
+    return;
+  }
 
   entries.push({ cal, protein, time: Date.now(), workout: workoutCheck.checked });
   localStorage.setItem("entries", JSON.stringify(entries));
+
   calInput.value = '';
   proteinInput.value = '';
+
   updateDisplay();
 };
 
-// delete entry
+// delete individual entry
 function deleteEntry(index) {
   entries.splice(index, 1);
   localStorage.setItem("entries", JSON.stringify(entries));
@@ -114,15 +87,13 @@ function deleteEntry(index) {
 
 // reset day and archive
 resetBtn.onclick = () => {
-  if (confirm("Reset today's entries?")) {
+  if(confirm("Reset today's entries?")) {
     const todayKey = getDayKey(Date.now());
-    const todayEntries = entries.filter(e => getDayKey(e.time) === todayKey);
-    if (todayEntries.length > 0) {
-      archive[todayKey] = todayEntries;
+    if(entries.length > 0) {
+      archive[todayKey] = entries.map(e => ({...e})); // copy current entries
       localStorage.setItem("archive", JSON.stringify(archive));
     }
-    // clear today
-    entries = entries.filter(e => getDayKey(e.time) !== todayKey);
+    entries = [];
     workoutDone = false;
     localStorage.setItem("entries", JSON.stringify(entries));
     localStorage.setItem("workoutDone", JSON.stringify(workoutDone));
@@ -135,6 +106,22 @@ workoutCheck.onchange = () => {
   workoutDone = workoutCheck.checked;
   localStorage.setItem("workoutDone", JSON.stringify(workoutDone));
   updateDisplay();
+};
+
+// set daily goals
+setGoalBtn.onclick = () => {
+  const calGoal = prompt("Enter your daily calorie goal:", DAILY_CAL_GOAL);
+  const proteinGoal = prompt("Enter your daily protein goal:", DAILY_PROTEIN_GOAL);
+
+  if(calGoal && proteinGoal && Number(calGoal) > 0 && Number(proteinGoal) > 0) {
+    DAILY_CAL_GOAL = Number(calGoal);
+    DAILY_PROTEIN_GOAL = Number(proteinGoal);
+    localStorage.setItem("DAILY_CAL_GOAL", DAILY_CAL_GOAL);
+    localStorage.setItem("DAILY_PROTEIN_GOAL", DAILY_PROTEIN_GOAL);
+    updateDisplay();
+  } else {
+    alert("Please enter valid positive numbers for both goals.");
+  }
 };
 
 // initial display

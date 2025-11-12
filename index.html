@@ -15,41 +15,23 @@
       text-align: center; 
     }
     h1 { color: #4CAF50; }
-
-    .input-group {
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      margin: 5px 0;
+    input { 
+      margin: 5px; 
+      padding: 10px; 
+      width: 80%; 
+      font-size: 16px; 
+      border-radius: 8px; 
+      border: 1px solid #ccc; 
     }
-    .input-group button {
-      padding: 10px 15px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
-      cursor: pointer;
-      margin: 0 5px;
-    }
-    .input-group button:hover { background-color: #45a049; }
-    .input-group input {
-      width: 80px;
-      text-align: center;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      -moz-appearance: textfield;
-    }
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
-    button#addBtn, button#resetBtn {
+    input[type="number"] { -moz-appearance: textfield; }
+    button { 
       padding: 10px 20px; 
-      margin: 10px; 
+      margin: 5px; 
       font-size: 16px; 
       border-radius: 8px; 
       border: none; 
@@ -57,47 +39,18 @@
       color: white; 
       cursor: pointer; 
     }
-    button#addBtn:hover, button#resetBtn:hover { background-color: #45a049; }
-
-    #entriesContainer {
-      margin-top: 20px;
-      max-height: 350px;
-      overflow-y: auto;
-      background: white;
-      padding: 10px;
-      border-radius: 10px;
+    button:hover { background-color: #45a049; }
+    #entries { 
+      margin-top: 20px; 
+      text-align: left; 
+      background: white; 
+      padding: 15px; 
+      border-radius: 10px; 
+      max-height: 300px; 
+      overflow-y: auto; 
     }
-
-    .day-group {
-      margin-bottom: 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-    }
-    .day-title {
-      font-weight: bold;
-      background: #e8f5e9;
-      padding: 8px;
-      cursor: pointer;
-      border-radius: 8px 8px 0 0;
-    }
-    .day-entries {
-      display: none;
-      padding: 5px 10px;
-    }
-    .entry { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin: 5px 0; 
-      border-bottom: 1px solid #eee; 
-      padding-bottom: 5px; 
-    }
-    .deleteBtn { 
-      background-color: #e74c3c; 
-      padding: 5px 10px; 
-      border-radius: 5px; 
-      font-size: 14px; 
-    }
+    .entry { display: flex; justify-content: space-between; align-items: center; margin: 5px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    .deleteBtn { background-color: #e74c3c; padding: 5px 10px; border-radius: 5px; font-size: 14px; }
     .deleteBtn:hover { background-color: #c0392b; }
     label { display: flex; align-items: center; justify-content: center; margin-top: 10px; font-size: 16px; }
     input[type="checkbox"] { margin-left: 10px; transform: scale(1.2); }
@@ -107,17 +60,8 @@
 </head>
 <body>
   <h1>Macro Tracker</h1>
-  
-  <div class="input-group">
-    <button id="calMinus">-</button>
-    <input type="number" id="calInput" placeholder="Calories" min="0">
-    <button id="calPlus">+</button>
-  </div>
-  <div class="input-group">
-    <button id="proMinus">-</button>
-    <input type="number" id="proteinInput" placeholder="Protein (g)" min="0">
-    <button id="proPlus">+</button>
-  </div>
+  <input type="number" id="calInput" placeholder="Calories" min="0" step="1">
+  <input type="number" id="proteinInput" placeholder="Protein (g)" min="0" step="1">
   
   <label>
     Workout Completed
@@ -127,6 +71,8 @@
   <div>
     <button id="addBtn">Add Entry</button>
     <button id="resetBtn">Reset Day</button>
+    <button id="setGoalBtn">Set Daily Goal</button>
+    <button id="viewLogBtn" onclick="location.href='log.html'">Work Log</button>
   </div>
 
   <h2>Today's Totals</h2>
@@ -136,8 +82,7 @@
   <div class="progress"><div class="progress-bar" id="proteinProgress"></div></div>
   <p id="workoutStatus">Workout: ❌</p>
 
-  <h2>Recent Days Log</h2>
-  <div id="entriesContainer"></div>
+  <div id="entries"></div>
 
   <script src="script.js"></script>
 </body>
