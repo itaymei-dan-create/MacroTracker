@@ -25,7 +25,6 @@ const proteinInput = document.getElementById("proteinInput");
 const addBtn = document.getElementById("addBtn");
 const resetBtn = document.getElementById("resetBtn");
 const setGoalBtn = document.getElementById("setGoalBtn");
-const exportBtn = document.getElementById("exportBtn");
 const workoutCheck = document.getElementById("workoutCheck");
 const addPresetBtn = document.getElementById("addPresetBtn");
 const customPresetsDiv = document.getElementById("customPresets");
@@ -353,34 +352,6 @@ setGoalBtn.onclick = () => {
   localStorage.setItem("DAILY_PROTEIN_GOAL", DAILY_PROTEIN_GOAL);
   updateDisplay();
   alert(`Goals updated!\nCalories: ${DAILY_CAL_GOAL}\nProtein: ${DAILY_PROTEIN_GOAL}g`);
-};
-
-// export data
-exportBtn.onclick = () => {
-  const data = {
-    entries,
-    archive,
-    workoutDone,
-    customPresets,
-    goals: { 
-      DAILY_CAL_GOAL, 
-      DAILY_PROTEIN_GOAL 
-    },
-    exportDate: new Date().toISOString()
-  };
-  
-  const dataStr = JSON.stringify(data, null, 2);
-  const blob = new Blob([dataStr], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `macro-tracker-backup-${getDayKey(Date.now())}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  
-  alert("Data exported successfully!");
 };
 
 // Allow Enter key to add entry

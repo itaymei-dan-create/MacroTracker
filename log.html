@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Workout Log</title>
+<style>
+body { 
+  font-family: 'Segoe UI', sans-serif; 
+  max-width: 500px; 
+  margin: auto; 
+  padding: 20px; 
+  background: #f2f2f2; 
+  color: #333; 
+}
+h1 { 
+  color: #4CAF50; 
+  text-align: center;
+  margin-bottom: 10px;
+}
+.back-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+  display: block;
+  width: 100%;
+}
+.back-btn:hover { background-color: #45a049; }
+
+.stats-overview {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.stats-overview h2 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #666;
+}
+.stat-box {
+  display: inline-block;
+  margin: 10px;
+  padding: 10px;
+  background: #f8f8f8;
+  border-radius: 8px;
+  min-width: 100px;
+}
+.stat-box .number {
+  font-size: 28px;
+  font-weight: bold;
+  color: #4CAF50;
+}
+.stat-box .label {
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.filter-section {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.filter-btn {
+  padding: 8px 15px;
+  margin: 5px;
+  border: 2px solid #4CAF50;
+  background: white;
+  color: #4CAF50;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.filter-btn.active {
+  background: #4CAF50;
+  color: white;
+}
+.filter-btn:hover { background: #e8f5e9; }
+.filter-btn.active:hover { background: #45a049; }
+
+.day-card {
+  background: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.day-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+.day-date {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+.day-weekday {
+  font-size: 14px;
+  color: #999;
+  margin-left: 10px;
+}
+.workout-badge {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+.workout-yes { background: #4CAF50; color: white; }
+.workout-no { background: #e0e0e0; color: #999; }
+
+.day-stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0;
+}
+.day-stat {
+  text-align: center;
+}
+.day-stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4CAF50;
+}
+.day-stat-label {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
+.day-stat-goal {
+  font-size: 11px;
+  color: #999;
+}
+.goal-met { color: #4CAF50; }
+.goal-not-met { color: #ff9800; }
+.goal-exceeded { color: #e74c3c; }
+
+.entries-preview {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 5px;
+}
+.entries-preview.expanded {
+  background: #e8f5e9;
+}
+.entry-item {
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+}
+.entry-item:last-child {
+  border-bottom: none;
+}
+.entry-time {
+  color: #999;
+  font-size: 12px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-size: 16px;
+}
+
+.streak-banner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.streak-number {
+  font-size: 48px;
+  font-weight: bold;
+}
+.streak-label {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.export-section {
+  text-align: center;
+  margin-top: 20px;
+}
+.export-btn {
+  background-color: #2196F3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.export-btn:hover { background-color: #0b7dda; }
+</style>
+</head>
+<body>
+<button class="back-btn" onclick="location.href='index.html'">← Back to Tracker</button>
+
+<h1>📊 Workout Log</h1>
+
+<div class="streak-banner" id="streakBanner"></div>
+
+<div class="stats-overview">
+  <h2>All-Time Stats</h2>
+  <div class="stat-box">
+    <div class="number" id="totalDays">0</div>
+    <div class="label">Days Tracked</div>
+  </div>
+  <div class="stat-box">
+    <div class="number" id="workoutDays">0</div>
+    <div class="label">Workouts</div>
+  </div>
+  <div class="stat-box">
+    <div class="number" id="avgCalories">0</div>
+    <div class="label">Avg Calories</div>
+  </div>
+  <div class="stat-box">
+    <div class="number" id="avgProtein">0</div>
+    <div class="label">Avg Protein</div>
+  </div>
+</div>
+
+<div class="filter-section">
+  <button class="filter-btn active" data-filter="all">All Days</button>
+  <button class="filter-btn" data-filter="week">This Week</button>
+  <button class="filter-btn" data-filter="month">This Month</button>
+  <button class="filter-btn" data-filter="workout">Workouts Only</button>
+</div>
+
+<div id="logContainer"></div>
+
+<div class="export-section">
+  <button class="export-btn" id="exportBtn">📥 Export All Data</button>
+  <p style="font-size: 12px; color: #999; margin-top: 10px;">Download a backup of all your data</p>
+</div>
+
+<script src="log.js"></script>
+</body>
+</html>

@@ -102,7 +102,7 @@ label {
   font-size: 16px; 
 }
 input[type="checkbox"] { 
-  margin-left: 10px; 
+  margin-right: 10px; 
   transform: scale(1.2); 
 }
 .progress { 
@@ -178,8 +178,8 @@ input[type="checkbox"] {
 <input type="number" id="calInput" placeholder="Calories" min="0" step="1" inputmode="numeric">
 <input type="number" id="proteinInput" placeholder="Protein (g)" min="0" step="1" inputmode="numeric">
 <label>
-  Workout Completed
   <input type="checkbox" id="workoutCheck">
+  Workout Completed
 </label>
 
 <div class="quick-add-section">
@@ -194,7 +194,7 @@ input[type="checkbox"] {
 </div>
 <div>
   <button id="setGoalBtn">Set Daily Goal</button>
-  <button id="exportBtn">Export Data</button>
+  <button id="viewLogBtn" onclick="location.href='log.html'">View Log</button>
 </div>
 
 <h2>Today's Totals</h2>
