@@ -21,6 +21,7 @@ const avgCaloriesEl = document.getElementById("avgCalories");
 const avgProteinEl = document.getElementById("avgProtein");
 const streakBanner = document.getElementById("streakBanner");
 const exportBtn = document.getElementById("exportBtn");
+const themeToggle = document.getElementById("themeToggle");
 
 let currentFilter = 'all';
 let expandedDay = null;
@@ -292,6 +293,20 @@ function deleteEntry(date, index) {
 
 // Make deleteEntry available globally
 window.deleteEntry = deleteEntry;
+
+// Dark mode toggle
+themeToggle.onclick = () => {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  themeToggle.textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('darkMode', isDark);
+};
+
+// Load dark mode preference
+if (localStorage.getItem('darkMode') === 'true') {
+  document.body.classList.add('dark-mode');
+  themeToggle.textContent = '☀️';
+}
 
 // Initialize
 displayStats();

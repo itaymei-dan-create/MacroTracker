@@ -23,11 +23,11 @@ function loadFromStorage(key, defaultValue) {
 const calInput = document.getElementById("calInput");
 const proteinInput = document.getElementById("proteinInput");
 const addBtn = document.getElementById("addBtn");
-const resetBtn = document.getElementById("resetBtn");
 const setGoalBtn = document.getElementById("setGoalBtn");
 const workoutCheck = document.getElementById("workoutCheck");
 const addPresetBtn = document.getElementById("addPresetBtn");
 const customPresetsDiv = document.getElementById("customPresets");
+const themeToggle = document.getElementById("themeToggle");
 
 const totalCalories = document.getElementById("totalCalories");
 const totalProtein = document.getElementById("totalProtein");
@@ -75,10 +75,20 @@ function checkNewDay() {
     workoutDone = false;
     saveToStorage("entries", entries);
     saveToStorage("workoutDone", workoutDone);
-    alert(`Previous day's data archived. Started fresh for ${today}!`);
+    
+    // Show notification
+    setTimeout(() => {
+      alert(`✅ Yesterday's data archived!\n\nStarted fresh for ${formatDateShort(today)}`);
+    }, 500);
   }
   
   localStorage.setItem("lastCheckDate", today);
+}
+
+// Format date nicely
+function formatDateShort(dateStr) {
+  const date = new Date(dateStr + 'T00:00:00');
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
 // render custom presets
@@ -312,7 +322,23 @@ undoBtn.onclick = () => {
   }
 };
 
+// Dark mode toggle
+themeToggle.onclick = () => {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  themeToggle.textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('darkMode', isDark);
+};
+
+// Load dark mode preference
+if (localStorage.getItem('darkMode') === 'true') {
+  document.body.classList.add('dark-mode');
+  themeToggle.textContent = '☀️';
+}
+
 // reset day and archive with better confirmation
+/*
+// REMOVED - Auto archives at midnight now
 resetBtn.onclick = () => {
   const totalCal = entries.reduce((sum, e) => sum + e.cal, 0);
   const totalPro = entries.reduce((sum, e) => sum + e.protein, 0);
@@ -330,6 +356,7 @@ resetBtn.onclick = () => {
     updateDisplay();
   }
 };
+*/
 
 // workout toggle
 workoutCheck.onchange = () => {
