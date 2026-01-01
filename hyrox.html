@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HYROX Relay Analytics - Track every station combination for relay training">
+    <title>HYROX Relay Analytics</title>
+    <link rel="stylesheet" href="hyrox.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <button class="home-btn" onclick="location.href='home.html'" aria-label="Return to home">
+            <span class="btn-icon">←</span>
+            <span class="btn-text">Home</span>
+        </button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+    </nav>
+    
+    <div class="container">
+        <header class="page-header">
+            <h1><span class="emoji">🏃‍♂️</span> HYROX Relay Analytics</h1>
+            <p class="subtitle">Track every station combination and optimize your relay performance</p>
+        </header>
+
+        <div class="stats-dashboard">
+            <div class="stats-card">
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-value" id="total-combos">0</div>
+                        <div class="stat-label">Total Combos</div>
+                    </div>
+                    <div class="stat-box stat-success">
+                        <div class="stat-icon">✓</div>
+                        <div class="stat-value" id="completed-combos">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-box stat-time">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-value"><span id="total-time">0</span> min</div>
+                        <div class="stat-label">Total Training Time</div>
+                    </div>
+                    <div class="stat-box stat-progress">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-value" id="completion-percent">0%</div>
+                        <div class="stat-label">Progress</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="control-group">
+                <label class="control-label">Filter Combos</label>
+                <div class="filter-buttons">
+                    <button class="btn btn-filter active" data-filter="all" aria-pressed="true">
+                        <span class="filter-icon">📋</span> All
+                    </button>
+                    <button class="btn btn-filter" data-filter="pending" aria-pressed="false">
+                        <span class="filter-icon">⏳</span> Pending
+                    </button>
+                    <button class="btn btn-filter" data-filter="completed" aria-pressed="false">
+                        <span class="filter-icon">✅</span> Completed
+                    </button>
+                </div>
+            </div>
+            <div class="control-group">
+                <button class="btn btn-reset" id="reset-btn">
+                    <span class="btn-icon">🔄</span> Reset All Data
+                </button>
+                <button class="btn btn-export" id="export-btn">
+                    <span class="btn-icon">📥</span> Export Data
+                </button>
+            </div>
+        </div>
+
+        <div class="combo-section">
+            <div class="section-header">
+                <h2>Station Combinations</h2>
+                <p class="section-description" id="combo-count">Showing 20 of 20 combos</p>
+            </div>
+            <div class="combo-grid" id="combo-grid"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span id="toast-message"></span>
+    </div>
+
+    <script src="hyrox.js"></script>
+</body>
+</html>
